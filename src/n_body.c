@@ -3,28 +3,36 @@
 
 #define GRAVITY 0.00000000006674
 
-double gravitational_force(Particle * particle_one, Particle * particle_two)
+double grav_force(Body *body_a, Body *body_b)
 {
-	double radius = sqrt(pow((particle_two->position[0] - particle_one->position[0]), 2.0) + pow((particle_two->position[1] - particle_one->position[1]), 2.0));
-	double force = GRAVITY * particle_one->mass * particle_two->mass / pow(radius, 2.0);
+	double radius = sqrt(pow((body_b->pos[0] - body_a->pos[0]), 2.0) 
+		   	+ pow((body_b->pos[1] - body_a->pos[1]), 2.0));
+
+	double force = GRAVITY * body_a->mass * body_b->mass / pow(radius, 2.0);
 	return force;
 }
 
-double increment_v(Particle * particles, int particle_count, Particle * particle, double time_step)
+double increment_v(Body **bodies, int body_count, Body *body, double time_step)
 {
-	for(int i = 0; i < particle_count; i++)
+	for(int i = 0; i < body_count; i++)
 	{
-		if(particle != &particles[i])
+		if(body != bodies[i])
 		{
-			double radius_vector[2] = {particles[i].position[0] - particle->position[0], particles[i].position[1] - particle->position[1]};
-			double radius = sqrt(pow((particles[i].position[0] - particle->position[0]), 2.0) + pow((particles[i].position[1] - particle->position[1]), 2.0));
-			double g_unit_vector[2] = {radius_vector[0] / radius, radius_vector[1] / radius};
+			double radius_vector[2] = {bodies[i]->pos[0] - body->pos[0], 
+				bodies[i]->pos[1] - body->pos[1]};
 
-			particle->velocity[0] += (gravitational_force(&particles[i], particle) * time_step / particle->mass) * g_unit_vector[0];
-			particle->velocity[1] += (gravitational_force(&particles[i], particle) * time_step / particle->mass) * g_unit_vector[1];
+			double radius = sqrt(pow((bodies[i]->pos[0] - body->pos[0]), 2.0) 
+					+ pow((bodies[i]->pos[1] - body->pos[1]), 2.0));
+
+			double g_unit_vector[2] = {radius_vector[0] / radius, 
+				radius_vector[1] / radius};
+
+			body->velocity[0] += (grav_force(bodies[i], body) * time_step / 
+					body->mass) * g_unit_vector[0];
+			body->velocity[1] += (grav_force(bodies[i], body) * time_step / 
+					body->mass) * g_unit_vector[1];
 		}
 	}
 
 	return 0;
 }
-
