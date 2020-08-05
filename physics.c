@@ -1,4 +1,4 @@
-#include "n_body.h"
+#include "physics.h"
 #include <math.h>
 
 #define GRAVITY 0.00000000006674

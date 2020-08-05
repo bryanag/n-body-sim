@@ -4,6 +4,7 @@
 typedef struct Body Body;
 struct Body
 {       
+	char *name;
 	long double mass;
 	long double velocity[2];
 	long double pos[2];
